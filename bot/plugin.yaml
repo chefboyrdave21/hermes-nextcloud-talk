@@ -1,0 +1,72 @@
+name: nextcloud-talk-bot
+label: Nextcloud Talk (webhook bot)
+kind: platform
+version: 0.3.0
+description: >-
+  Nextcloud Talk webhook bot adapter for Hermes Agent. Installed as a
+  drop-in plugin (ctx.register_platform). Posts a visible working-signal
+  reaction (default eyes emoji) on the triggering message while a turn is
+  in flight, since Talk bots cannot show typing. This manifest is for a
+  standalone deployment of this directory only; the combined repo's root
+  plugin.yaml covers both modes in one install.
+author: "Hermes Nextcloud Talk contributors"
+requires_env:
+  - name: NEXTCLOUD_TALK_SECRET
+    description: "Shared HMAC secret with the Nextcloud Talk bot install (64+ chars)"
+    prompt: "Nextcloud Talk bot secret"
+    password: true
+  - name: NEXTCLOUD_TALK_BASE_URL
+    description: "Nextcloud base URL for outbound bot replies (e.g. https://cloud.example.com)"
+    prompt: "Nextcloud base URL"
+    password: false
+optional_env:
+  - name: NEXTCLOUD_TALK_HOST
+    description: "Bind address for the inbound webhook listener (a private/VPN IP, never 0.0.0.0)"
+    prompt: "Bind host (default 127.0.0.1, inert)"
+    password: false
+  - name: NEXTCLOUD_TALK_PORT
+    description: "Bind port for the inbound webhook listener (default 18797)"
+    prompt: "Bind port"
+    password: false
+  - name: NEXTCLOUD_TALK_PATH
+    description: "Webhook path (default /webhooks/nextcloud-talk)"
+    prompt: "Webhook path"
+    password: false
+  - name: NEXTCLOUD_TALK_ROOMS_JSON
+    description: >-
+      JSON map of room token -> {mode, watch_interval_seconds}, e.g.
+      {"tok1": {"mode": "mention"}}. Unlisted rooms default to mention.
+    prompt: "Per-room mode JSON (or empty for all-mention)"
+    password: false
+  - name: NEXTCLOUD_TALK_MENTION_TRIGGERS
+    description: "Comma-separated trigger words for mention mode (default: the bot's name)"
+    prompt: "Mention trigger words"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOW_ALL_USERS
+    description: >-
+      Set true to match this adapter's documented security model: HMAC +
+      per-room bot enablement (Nextcloud-side, occ talk:bot:setup) are the
+      authorization boundary, not a Hermes user-id allowlist. Unset = deny
+      all senders (same default as every other platform).
+    prompt: "Allow all Nextcloud users in bot-enabled rooms? (true/false)"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOWED_USERS
+    description: "Comma-separated Nextcloud user ids to allow instead (alternative to ALLOW_ALL_USERS)"
+    prompt: "Allowed user ids (comma-separated)"
+    password: false
+  - name: NEXTCLOUD_TALK_WORKING_REACTION
+    description: >-
+      Reaction added to a message the instant the bot decides to answer it
+      (Talk bots have no typing indicator). Default: the eyes emoji. Set to
+      an empty string to disable the whole working-signal feature (no add,
+      no remove, no done/error reaction either).
+    prompt: "Working reaction (default eyes emoji, empty disables)"
+    password: false
+  - name: NEXTCLOUD_TALK_DONE_REACTION
+    description: >-
+      Reaction added after the working reaction is removed, once the reply
+      posts successfully. Default: empty (no done reaction; the working
+      reaction is simply removed). A failed turn always gets a warning
+      emoji instead, regardless of this setting.
+    prompt: "Done reaction (default empty)"
+    password: false

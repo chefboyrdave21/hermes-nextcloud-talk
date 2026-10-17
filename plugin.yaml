@@ -1,0 +1,109 @@
+name: nextcloud-talk
+label: Nextcloud Talk
+kind: platform
+version: 1.0.0
+description: >
+  Two Nextcloud Talk connectors for Hermes Agent in one plugin: a webhook
+  bot (Nextcloud Talk Bot API, HMAC-signed) and a real Nextcloud user
+  account (app password, long-polling the Chat REST API, with federation
+  invite support). Mode is picked automatically by which credential is
+  configured -- see README.md. No extra SDKs: aiohttp for bot mode, httpx
+  for user mode, both already Hermes dependencies.
+author: "Hermes Nextcloud Talk contributors"
+requires_env: []
+optional_env:
+  # -- Bot mode --
+  - name: NEXTCLOUD_TALK_SECRET
+    description: "Bot mode: shared HMAC secret with the Nextcloud Talk bot install (64+ chars)"
+    prompt: "Nextcloud Talk bot secret (bot mode)"
+    password: true
+  - name: NEXTCLOUD_TALK_BASE_URL
+    description: "Bot mode: Nextcloud base URL for outbound bot replies (e.g. https://cloud.example.com)"
+    prompt: "Nextcloud base URL (bot mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_HOST
+    description: "Bot mode: bind address for the inbound webhook listener (a private/VPN IP, never 0.0.0.0)"
+    prompt: "Bind host (bot mode, default 127.0.0.1, inert)"
+    password: false
+  - name: NEXTCLOUD_TALK_PORT
+    description: "Bot mode: bind port for the inbound webhook listener (default 18797)"
+    prompt: "Bind port (bot mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_PATH
+    description: "Bot mode: webhook path (default /webhooks/nextcloud-talk)"
+    prompt: "Webhook path (bot mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_ROOMS_JSON
+    description: >-
+      Bot mode: JSON map of room token -> {mode, watch_interval_seconds},
+      e.g. {"tok1": {"mode": "mention"}}. Unlisted rooms default to mention.
+    prompt: "Per-room mode JSON (bot mode, or empty for all-mention)"
+    password: false
+  - name: NEXTCLOUD_TALK_MENTION_TRIGGERS
+    description: "Bot mode: comma-separated trigger words for mention mode"
+    prompt: "Mention trigger words (bot mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_DONE_REACTION
+    description: "Bot mode: reaction added after a successful reply (default empty)"
+    prompt: "Done reaction (bot mode, default empty)"
+    password: false
+  # -- User mode --
+  - name: NEXTCLOUD_TALK_SERVER_URL
+    description: "User mode: base URL of the Nextcloud instance (e.g. https://cloud.example.com)"
+    prompt: "Nextcloud server URL (user mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_APP_PASSWORD
+    description: "User mode: app password for the agent's Nextcloud account (NOT its login password)"
+    prompt: "Nextcloud Talk app password (user mode)"
+    password: true
+  - name: NEXTCLOUD_TALK_USERNAME
+    description: "User mode: Nextcloud user id for the agent's account"
+    prompt: "Nextcloud username (user mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_DISPLAY_NAME
+    description: "User mode: display name used for plain-text @mention matching"
+    prompt: "Display name (user mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOWED_INVITERS
+    description: "User mode: comma-separated federation-invite senders to auto-accept from"
+    prompt: "Allowed federation inviters (user mode, comma-separated)"
+    password: false
+  - name: NEXTCLOUD_TALK_DISCOVERY_INTERVAL_SECONDS
+    description: "User mode: room-list / federation-invite re-discovery interval (default 30)"
+    prompt: "Discovery interval seconds (user mode)"
+    password: false
+  - name: NEXTCLOUD_TALK_MAX_ROOMS
+    description: "User mode: maximum concurrent per-room long-poll tasks (default 20)"
+    prompt: "Max concurrent rooms (user mode)"
+    password: false
+  # -- Shared --
+  - name: NEXTCLOUD_TALK_MODE
+    description: "Breaks the tie when both NEXTCLOUD_TALK_SECRET and NEXTCLOUD_TALK_APP_PASSWORD are set: 'bot' or 'user'"
+    prompt: "Mode override ('bot' or 'user', or empty)"
+    password: false
+  - name: NEXTCLOUD_TALK_ROOM_MODES
+    description: "User mode: comma-separated token=mode pairs (mention|watch|free)"
+    prompt: "Room modes (user mode, token=mode,...)"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOWED_USERS
+    description: "Comma-separated Nextcloud user ids allowed to trigger the agent"
+    prompt: "Allowed users (comma-separated)"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOW_ALL_USERS
+    description: "Allow any Nextcloud user to trigger the agent (bot mode: matches its documented security model; user mode: dev only)"
+    prompt: "Allow all users? (true/false)"
+    password: false
+  - name: NEXTCLOUD_TALK_HOME_CHANNEL
+    description: "Default room token for cron / notification delivery"
+    prompt: "Home channel room token (or empty)"
+    password: false
+  - name: NEXTCLOUD_TALK_HOME_CHANNEL_NAME
+    description: "Human label for the home channel"
+    prompt: "Home channel display name (or empty)"
+    password: false
+  - name: NEXTCLOUD_TALK_WORKING_REACTION
+    description: >-
+      Reaction added to a message while a turn is being processed and
+      removed once it finishes (default: the eyes emoji; empty disables).
+    prompt: "Working reaction (default eyes emoji, empty disables)"
+    password: false

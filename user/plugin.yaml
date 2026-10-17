@@ -1,0 +1,70 @@
+name: nextcloud-talk-user
+label: Nextcloud Talk (user account)
+kind: platform
+version: 1.0.0
+description: >
+  Nextcloud Talk real-user adapter for Hermes Agent. The agent authenticates
+  as a genuine Nextcloud account (an app password, not a webhook bot),
+  discovers rooms the account is a member of, long-polls the Chat REST API
+  per room, detects @mentions by display name and rich mention parameters,
+  and auto-accepts federation invitations only from an allowlisted inviter.
+  No extra SDK -- only httpx (already a Hermes dependency). This manifest
+  is for a standalone deployment of this directory only; the combined
+  repo's root plugin.yaml covers both modes in one install.
+author: "Hermes Nextcloud Talk contributors"
+requires_env:
+  - name: NEXTCLOUD_TALK_SERVER_URL
+    description: "Base URL of the Nextcloud instance (e.g. https://cloud.example.com)"
+    prompt: "Nextcloud server URL"
+    password: false
+  - name: NEXTCLOUD_TALK_APP_PASSWORD
+    description: "App password for the bot's Nextcloud account (NOT its login password)"
+    prompt: "Nextcloud Talk app password"
+    password: true
+optional_env:
+  - name: NEXTCLOUD_TALK_USERNAME
+    description: "Nextcloud user id for the bot account (default: hermes-bot)"
+    prompt: "Nextcloud username"
+    password: false
+  - name: NEXTCLOUD_TALK_DISPLAY_NAME
+    description: "Display name used for plain-text @mention matching (default: Hermes)"
+    prompt: "Display name"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOWED_INVITERS
+    description: "Comma-separated federation-invite senders to auto-accept from (e.g. alice)"
+    prompt: "Allowed federation inviters (comma-separated)"
+    password: false
+  - name: NEXTCLOUD_TALK_ROOM_MODES
+    description: "Comma-separated token=mode pairs (mention|watch|free), default mention for unlisted rooms"
+    prompt: "Room modes (token=mode,...)"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOWED_USERS
+    description: "Comma-separated Nextcloud user ids allowed to trigger the bot"
+    prompt: "Allowed users (comma-separated)"
+    password: false
+  - name: NEXTCLOUD_TALK_ALLOW_ALL_USERS
+    description: "Allow any Nextcloud user to trigger the bot (dev only)"
+    prompt: "Allow all users? (true/false)"
+    password: false
+  - name: NEXTCLOUD_TALK_HOME_CHANNEL
+    description: "Default room token for cron / notification delivery"
+    prompt: "Home channel room token (or empty)"
+    password: false
+  - name: NEXTCLOUD_TALK_HOME_CHANNEL_NAME
+    description: "Human label for the home channel"
+    prompt: "Home channel display name (or empty)"
+    password: false
+  - name: NEXTCLOUD_TALK_DISCOVERY_INTERVAL_SECONDS
+    description: "Room-list / federation-invite re-discovery interval (default 30)"
+    prompt: "Discovery interval seconds"
+    password: false
+  - name: NEXTCLOUD_TALK_MAX_ROOMS
+    description: "Maximum concurrent per-room long-poll tasks (default 20)"
+    prompt: "Max concurrent rooms"
+    password: false
+  - name: NEXTCLOUD_TALK_WORKING_REACTION
+    description: >-
+      Reaction added to a message while a turn is being processed and
+      removed once it finishes (default: the eyes emoji; empty disables).
+    prompt: "Working reaction (default eyes emoji, empty disables)"
+    password: false
